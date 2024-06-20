@@ -1,93 +1,59 @@
-// import { useState } from "react";
-
-// import "./index.css";
-// import { login } from "./utls";
-// const Login = () => {
-//   const [username, setusername] = useState("");
-//   const [password, setpassword] = useState("");
-//   console.log({ username });
-
-//   const handleLogin = async (event) => {
-//     event.preventDefault();
-//     const result = await login({ username, password });
-//     console.log({ result });
-//   };
-//   return (
-//     <>
-//       <h2>Login</h2>
-//       <form onSubmit={handleLogin}>
-//         <input
-//           placeholder="Enter name"
-//           type="text"
-//           onChange={(event) => setusername(event.target.value)}
-//         />
-//         <br />
-//         <input
-//           placeholder="Enter password"
-//           type="password"
-//           onChange={(event) => setpassword(event.target.value)}
-//         />
-//         <br />
-//         <button type="submit">Login</button>
-//       </form>
-//     </>
-//   );
-// };
-
-// export default Login;
-// remember items within component -useState up
-// add fuctionality -hooks
-//atoms
-// custom hooks
-
-
 import { useState } from "react";
-import { login } from "./utls";
 import "./index.css";
+import { login } from "./utls";
+import { Introduction } from "../App";
 
-const Login = ({ onClose }) => {
+const Login = ({ setIsLoggedIn }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState(null);
+  const [openModal, setModalIsOpen] = useState(false);
+  
+  console.log({ username });
 
   const handleLogin = async (event) => {
     event.preventDefault();
     try {
       const result = await login({ username, password });
-      if (result.error) {
-        setError(result.error);
+      console.log({ result });
+      if (result && result.token) {
+        localStorage.setItem('token', result.token);
+        setIsLoggedIn(true);
+        setModalIsOpen(false);
       } else {
-       onClose(); 
+        console.error('Login failed: No token received');
+        
       }
     } catch (error) {
-      setError("An error occurred during login.");
+      console.error('Login error:', error);
+      
     }
   };
 
+  
+
   return (
     <>
-      <h2>Login</h2>
-      {error && <p>{error}</p>}
-      <form onSubmit={handleLogin}>
-        <input
-          placeholder="Enter name"
-          type="text"
-          value={username}
-          onChange={(event) => setUsername(event.target.value)}
-        />
-        <br />
-        <input
-          placeholder="Enter password"
-          type="password"
-          value={password}
-          onChange={(event) => setPassword(event.target.value)}
-        />
-        <br />
-        <button type="submit">Login</button>
-      </form>
+      <Introduction setModalIsOpen={setModalIsOpen} />
+      {openModal && (
+        <form onSubmit={handleLogin}>
+          <h2>Login</h2>
+          <input
+            placeholder="Enter name"
+            type="text"
+            onChange={(event) => setUsername(event.target.value)}
+          />
+          <br />
+          <input
+            placeholder="Enter password"
+            type="password"
+            onChange={(event) => setPassword(event.target.value)}
+          />
+          <br />
+          <button type="submit">Login</button>
+        </form>
+      )}
     </>
   );
 };
 
 export default Login;
-

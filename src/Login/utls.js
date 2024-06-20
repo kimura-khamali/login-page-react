@@ -1,42 +1,24 @@
-const baseUrl = process.env.REACT_APP_BASE_URL;
-console.log({ baseUrl });
+
 
 export const login = async (username, password) => {
+  const baseUrl = process.env.REACT_APP_BASE_URL;
   try {
     const response = await fetch(`${baseUrl}/auth/login`, {
       method: "POST",
       headers: {
-        "content-type": "application/json",
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify(username, password),
+      body: JSON.stringify({ username, password }),
     });
-    return response.JSON;
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
   } catch (error) {
-    return `error during login ${error.message}`;
+    console.error(`Error during login: ${error.message}`);
+    throw error;
   }
 };
-
-
-// const baseUrl = process.env.REACT_APP_BASE_URL;
-
-// export const fetchUsers = async () => {
-//   try {
-//     const response = await fetch(`${baseUrl}/users`);
-//     const data = await response.json();
-//     return data;
-//   } catch (error) {
-//     console.error('Error fetching users:', error);
-//     return [];
-//   }
-// };
-
-// export const fetchUserById = async (userId) => {
-//   try {
-//     const response = await fetch(`${baseUrl}/users/${userId}`);
-//     const data = await response.json();
-//     return data;
-//   } catch (error) {
-//     console.error('Error fetching user:', error);
-//     return null;
-//   }
-// };

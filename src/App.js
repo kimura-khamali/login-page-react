@@ -1,24 +1,29 @@
-// import Login from "./Login";
-import LoginModal from "./Login/loginmodel";
 import Users from "./Users";
-// import LoginModal from "./Login/loginmodel";
+import Login from "./Login";
+// import Users from "./Users";
+import { useState } from "react";
 
-export const Introduction = () => {
+export const Introduction = ({setModalIsOpen}) => {
+  const openModal = () =>{
+    setModalIsOpen(true)
+  }
   return (
-    <div>
-      <h1>We are Adalab</h1>
-    </div>
+    <>
+      <button className="login" onClick={openModal}>Log In</button>
+    </>
   );
 };
 
 function App() {
+  const [IsloggedIn,setIsloggedIn] = useState(false)
   return (
     <>
       {/* <Login /> */}
-      <LoginModal/>
-      <Users/>
+      <Login setIsloggedIn={setIsloggedIn}/>
+      <Users IsloggedIn={IsloggedIn}/>
     </>
   );
 }
 
 export default App;
+
